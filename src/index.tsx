@@ -305,7 +305,6 @@ const StepIndicator = ({
   const renderStep = (position: number) => {
     let stepStyle;
     let indicatorLabelStyle: TextStyle = {};
-    console.log("sizeAnim");
     switch (getStepStatus(position)) {
       case STEP_STATUS.CURRENT: {
         stepStyle = {
