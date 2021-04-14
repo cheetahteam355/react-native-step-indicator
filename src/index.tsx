@@ -41,12 +41,12 @@ interface DefaultStepIndicatorStyles {
   labelColor: string;
   labelSize: number;
   labelAlign:
-    | 'center'
-    | 'flex-start'
-    | 'flex-end'
-    | 'stretch'
-    | 'baseline'
-    | undefined;
+  | 'center'
+  | 'flex-start'
+  | 'flex-end'
+  | 'stretch'
+  | 'baseline'
+  | undefined;
   currentStepLabelColor: string;
   labelFontFamily?: string;
 }
@@ -100,10 +100,10 @@ const StepIndicator = ({
 
   const progressAnim = React.useRef(new Animated.Value(0)).current;
   const sizeAnim = React.useRef(
-    new Animated.Value(customStyles.stepIndicatorSize)
+    new Animated.Value(customStyles.stepIndicatorSize * 0.75)
   ).current;
   const staleSizeAnim = React.useRef(
-    new Animated.Value(customStyles.stepIndicatorSize)
+    new Animated.Value(customStyles.stepIndicatorSize * 0.75)
   ).current;
   const borderRadiusAnim = React.useRef(
     new Animated.Value(customStyles.stepIndicatorSize / 2)
@@ -138,8 +138,8 @@ const StepIndicator = ({
         bottom: height / (2 * stepCount),
         width:
           customStyles.separatorStrokeUnfinishedWidth === 0
-            ? customStyles.separatorStrokeWidth
-            : customStyles.separatorStrokeUnfinishedWidth,
+            ? customStyles.separatorStrokeWidth - 10
+            : customStyles.separatorStrokeUnfinishedWidth - 10,
       };
     } else {
       progressBarBackgroundStyle = {
@@ -188,8 +188,8 @@ const StepIndicator = ({
       progressBarStyle = {
         ...progressBarStyle,
         top: (height - customStyles.separatorStrokeWidth) / 2,
-        left: width / (2 * stepCount),
-        right: width / (2 * stepCount),
+        left: width / (2 * stepCount) + 5,
+        right: width / (2 * stepCount) + 5,
         height:
           customStyles.separatorStrokeFinishedWidth === 0
             ? customStyles.separatorStrokeWidth
@@ -231,13 +231,13 @@ const StepIndicator = ({
           styles.stepIndicatorContainer,
           direction === 'vertical'
             ? {
-                flexDirection: 'column',
-                width: customStyles.currentStepIndicatorSize,
-              }
+              flexDirection: 'column',
+              width: customStyles.currentStepIndicatorSize,
+            }
             : {
-                flexDirection: 'row',
-                height: customStyles.currentStepIndicatorSize,
-              },
+              flexDirection: 'row',
+              height: customStyles.currentStepIndicatorSize,
+            },
         ]}
       >
         {steps}
@@ -269,19 +269,19 @@ const StepIndicator = ({
                 currentPosition,
               })
             ) : (
-              <Text
-                style={[
-                  styles.stepLabel,
-                  selectedStepLabelStyle,
-                  {
-                    fontSize: customStyles.labelSize,
-                    fontFamily: customStyles.labelFontFamily,
-                  },
-                ]}
-              >
-                {label}
-              </Text>
-            )}
+                <Text
+                  style={[
+                    styles.stepLabel,
+                    selectedStepLabelStyle,
+                    {
+                      fontSize: customStyles.labelSize,
+                      fontFamily: customStyles.labelFontFamily,
+                    },
+                  ]}
+                >
+                  {label}
+                </Text>
+              )}
           </View>
         </TouchableWithoutFeedback>
       );
@@ -305,6 +305,7 @@ const StepIndicator = ({
   const renderStep = (position: number) => {
     let stepStyle;
     let indicatorLabelStyle: TextStyle = {};
+    console.log("sizeAnim");
     switch (getStepStatus(position)) {
       case STEP_STATUS.CURRENT: {
         stepStyle = {
@@ -363,15 +364,15 @@ const StepIndicator = ({
     }
 
     return (
-      <Animated.View key={'step-indicator'} style={[styles.step, stepStyle]}>
+      <Animated.View key={'step-indicator'} style={[styles.step, stepStyle, getStepStatus(position) === STEP_STATUS.UNFINISHED ? { height: 10, width: 10, borderRadius: 10 } : {}]}>
         {renderCustomStepIndicator ? (
           renderCustomStepIndicator({
             position,
             stepStatus: getStepStatus(position),
           })
         ) : (
-          <Text style={indicatorLabelStyle}>{`${position + 1}`}</Text>
-        )}
+            <Text style={indicatorLabelStyle}>{`${position + 1}`}</Text>
+          )}
       </Animated.View>
     );
   };
